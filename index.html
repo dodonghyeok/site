@@ -445,7 +445,7 @@
   </div>
 </div>
 
-<div class="footer">클릭으로 이름 삭제 · 새로고침하면 초기화됩니다</div>
+<div class="footer">클릭으로 이름 삭제 · 명단은 자동 저장됩니다 💾</div>
 
 <!-- 팝업 -->
 <div class="popup-overlay" id="popup">
@@ -462,6 +462,18 @@ let students = [];
 let isSpinning = false;
 let pickHistory = [];
 const SAMPLE = ['김민준','이서연','박지호','최수아','정민서','강도현','윤하은','임준혁','한채원','오태양','신예린','류동현','문지우','배소율','장현우'];
+const STORAGE_KEY = 'classroom_picker_students';
+
+function saveStudents() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(students)); } catch(e) {}
+}
+
+function loadStudents() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) students = JSON.parse(saved);
+  } catch(e) { students = []; }
+}
 
 function renderTags() {
   const container = document.getElementById('nameTags');
@@ -470,6 +482,7 @@ function renderTags() {
     `<div class="name-tag" title="클릭하여 삭제" onclick="removeName(${i})">${s} <span class="remove">✕</span></div>`
   ).join('') || '<span style="color:rgba(240,234,214,0.25);font-size:13px;padding:4px;">아직 등록된 학생이 없습니다</span>';
   badge.textContent = `학생 ${students.length}명 등록됨`;
+  saveStudents();
 }
 
 function addName() {
@@ -610,6 +623,7 @@ document.getElementById('popup').addEventListener('click', e => {
   if (e.target === document.getElementById('popup')) closePopup();
 });
 
+loadStudents();
 renderTags();
 </script>
 </body>
